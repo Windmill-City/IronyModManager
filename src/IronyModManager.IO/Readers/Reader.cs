@@ -146,6 +146,7 @@ namespace IronyModManager.IO.Readers
                 if (stream != null)
                 {
                     MemoryStream ms = null;
+                    SixLabors.ImageSharp.Formats.Png.PngEncoder pngEncoder = new SixLabors.ImageSharp.Formats.Png.PngEncoder();
                     try
                     {
                         if (file.EndsWith(DDSExtension, StringComparison.OrdinalIgnoreCase))
@@ -158,21 +159,21 @@ namespace IronyModManager.IO.Readers
                             if (pfimImage.Format == ImageFormat.Rgba32)
                             {
                                 ms = new MemoryStream();
-                                using var image = Image.LoadPixelData<Bgra32>(tightData(pfimImage), pfimImage.Width, pfimImage.Height);
-                                await image.SaveAsPngAsync(ms);
+                                using var image = Image.LoadPixelData<Bgra32>(tightData(pfimImage), pfimImage.Width, pfimImage.Height);            
+                                await image.SaveAsync(ms, pngEncoder);
                             }
                             else if (pfimImage.Format == ImageFormat.Rgb24)
                             {
                                 ms = new MemoryStream();
                                 using var image = Image.LoadPixelData<Bgr24>(tightData(pfimImage), pfimImage.Width, pfimImage.Height);
-                                await image.SaveAsPngAsync(ms);
+                                await image.SaveAsync(ms, pngEncoder);
                             }
                         }
                         else
                         {
                             ms = new MemoryStream();
                             using var image = await Image.LoadAsync(stream);
-                            await image.SaveAsPngAsync(ms);
+                            await image.SaveAsync(ms, pngEncoder);
                         }
                         if (ms != null && ms.CanSeek)
                         {
